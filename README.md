@@ -24,8 +24,6 @@ cd sql-chatbot
 
 ```bash
 npm install
-# או
-yarn install
 ```
 
 3. הגדרת משתני הסביבה:
