@@ -78,7 +78,7 @@ export default function Home() {
               SQL Assistant
             </h1>
             <p className="text-slate-500 text-center mt-2 text-lg">
-              צ'אט חכם לעזרה ב-SQL
+              צ&rsquo;אט חכם לעזרה ב-SQL
             </p>
           </div>
 
