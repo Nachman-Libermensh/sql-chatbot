@@ -16,7 +16,7 @@
 1. שכפול (Clone) של המאגר:
 
 ```bash
-git clone https://github.com/your-username/sql-chatbot.git
+git clone https://github.com/Nachman-Libermensh/sql-chatbot.git
 cd sql-chatbot
 ```
 
@@ -39,8 +39,6 @@ OPENAI_API_KEY=המפתח_שלך_כאן
 
 ```bash
 npm run dev
-# או
-yarn dev
 ```
 
 5. פתח את הדפדפן בכתובת [http://localhost:3000](http://localhost:3000) כדי להתחיל להשתמש בצ'אטבוט.
