@@ -46,6 +46,105 @@ button {
   line-height: 1;
 }
 
+/* :root {
+  --font-geist-sans: 'GeistSans', sans-serif;
+  --font-geist-mono: 'GeistMono', monospace;
+} */
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.prose pre {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.prose pre > div {
+  margin: 0 !important;
+  padding: 1rem !important;
+  border-radius: 0.5rem !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.text-formatter {
+  direction: rtl;
+}
+
+.text-formatter h1,
+.text-formatter h2 {
+  direction: rtl;
+  text-align: right;
+  position: relative;
+  padding-right: 1rem;
+}
+
+.text-formatter h1::before,
+.text-formatter h2::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 1em;
+  background: linear-gradient(to bottom, #3b82f6, #2563eb);
+  border-radius: 2px;
+}
+
+.text-formatter li {
+  direction: rtl;
+  text-align: right;
+  position: relative;
+  padding-right: 1rem;
+  list-style: none;
+}
+
+.text-formatter li::before {
+  content: "•";
+  position: absolute;
+  right: 0;
+  color: #3b82f6;
+}
+
+.text-formatter p {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Add auto direction for English text */
+[lang="en"] {
+  direction: ltr;
+  text-align: left;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+[dir="rtl"] .prose ul,
+[dir="rtl"] .prose ol {
+  padding-right: 1.25rem;
+  padding-left: 0;
+}
+
+[dir="auto"] {
+  text-align: start;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -1,13 +1,14 @@
 "use client";
 
-import { ChatMessage } from "@/types";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bot, Loader2, SendHorizontal, User2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChatMessage } from "@/types";
+import { MessageBubble } from "@/components/MessageBubble";
+import { ChatInput } from "@/components/ChatInput";
 
 export default function Home() {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -22,12 +23,6 @@ export default function Home() {
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
 
   const handleSendMessage = async () => {
     if (!inputText.trim() || isLoading) return;
@@ -45,10 +40,13 @@ export default function Home() {
 
     try {
       const response = await axios.post("/api/chat", {
-        messages: messages.map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        })),
+        messages: [
+          ...messages.map((msg) => ({
+            role: msg.role,
+            content: msg.content,
+          })),
+          { role: userMessage.role, content: userMessage.content },
+        ],
       });
 
       setMessages((prev) => [
@@ -62,93 +60,73 @@ export default function Home() {
       ]);
     } catch (error) {
       console.error("שגיאה:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          content: "מצטער, אירעה שגיאה בעיבוד הבקשה. אנא נסה שנית.",
+          role: "assistant",
+          timestamp: new Date(),
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
+  const scrollToBottom = useCallback(() => {
+    if (scrollRef.current) {
+      const scrollContainer = scrollRef.current.parentElement;
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(scrollToBottom, 100);
+    return () => clearTimeout(timeoutId);
+  }, [messages, scrollToBottom]);
   return (
-    <div className="flex min-h-screen flex-col items-center p-4 md:p-8">
-      <Card className="w-full max-w-3xl border-none shadow-xl bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/90">
+    <div className="flex min-h-screen flex-col items-center p-4 md:p-8 bg-gradient-to-b from-slate-50 to-white">
+      <Card className="w-full max-w-4xl border-none shadow-xl bg-white/90 backdrop-blur">
         <CardContent className="p-0">
           <div className="border-b p-6 bg-gradient-to-b from-white to-slate-50">
             <h1 className="text-3xl font-bold text-center bg-gradient-to-br from-slate-900 to-slate-700 bg-clip-text text-transparent">
               SQL Assistant
             </h1>
             <p className="text-slate-500 text-center mt-2 text-lg">
-              צ&rsquo;אט חכם לעזרה ב-SQL
+              צ׳אט חכם לעזרה ב-SQL
             </p>
           </div>
 
           <ScrollArea className="h-[65vh] px-4 md:px-6 py-4">
-            <div className="space-y-6 pb-4">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex items-center gap-2 ${
-                    message.role === "user" ? "flex-row-reverse" : "flex-row"
-                  }`}
+            <div className="space-y-6">
+              <AnimatePresence mode="popLayout" initial={false}>
+                {messages.map((message) => (
+                  <MessageBubble key={message.id} message={message} />
+                ))}
+              </AnimatePresence>
+
+              {isLoading && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex items-center gap-2 text-slate-500 mr-12"
                 >
-                  <div
-                    className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${
-                      message.role === "assistant"
-                        ? "bg-blue-100 text-blue-600"
-                        : "bg-slate-100 text-slate-600"
-                    }`}
-                  >
-                    {message.role === "assistant" ? (
-                      <Bot className="w-5 h-5" />
-                    ) : (
-                      <User2 className="w-5 h-5" />
-                    )}
-                  </div>
-                  <div
-                    className={`rounded-2xl px-5 py-3 max-w-[80%] transition-shadow self-start ${
-                      message.role === "assistant"
-                        ? "bg-slate-100 text-slate-600 shadow-sm hover:shadow"
-                        : "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md hover:shadow-lg"
-                    }`}
-                  >
-                    <p
-                      dir="auto"
-                      className="text-[15px] leading-relaxed font-[450]"
-                    >
-                      {message.content}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">מעבד את התשובה...</span>
+                </motion.div>
+              )}
             </div>
+            <div ref={scrollRef} /> {/* Add scroll anchor */}
           </ScrollArea>
 
-          <div className="border-t p-4 md:p-6 bg-gradient-to-b from-slate-50 to-white">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSendMessage();
-              }}
-              className="relative flex items-center gap-3"
-            >
-              <Input
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder="הקלד את השאלה שלך כאן..."
-                disabled={isLoading}
-                dir="rtl"
-                className="flex-1 h-12 px-4 bg-white/80 border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base shadow-sm"
-              />
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="h-12 w-12 shrink-0 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md hover:shadow-lg hover:opacity-90 transition-all flex items-center justify-center"
-              >
-                {isLoading ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <SendHorizontal className="h-5 w-5 rotate-180" />
-                )}
-              </Button>
-            </form>
-          </div>
+          <ChatInput
+            inputText={inputText}
+            isLoading={isLoading}
+            onInputChange={setInputText}
+            onSend={handleSendMessage}
+          />
         </CardContent>
       </Card>
     </div>

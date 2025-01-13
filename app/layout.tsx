@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+
 import "./globals.css";
 import { cn } from "@/lib/utils";
-
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist",
-});
 
 export const metadata: Metadata = {
   title: "SQL Assistant - צ'אט SQL חכם",
@@ -21,9 +16,15 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl" suppressHydrationWarning>
       <body
-        className={cn("min-h-screen antialiased bg-slate-50", geist.variable)}
+        className={cn(
+          "min-h-screen antialiased bg-[#fafafa] dark:bg-[#111]"
+          // GeistSans.variable,
+          // GeistMono.variable
+        )}
       >
-        {children}
+        <main className="relative flex min-h-screen flex-col">
+          <div className="flex-1 flex-grow">{children}</div>
+        </main>
       </body>
     </html>
   );
