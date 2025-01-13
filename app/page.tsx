@@ -1,25 +1,33 @@
 "use client";
 
 import { ChatMessage } from "@/types";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Bot, Loader2, SendHorizontal, User2 } from "lucide-react";
+import axios from "axios";
 
 export default function Home() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "1",
       content:
-        "שלום! אני העוזר שלך ל-SQL. אשמח לעזור בשאילתות, תכנון בסיסי נתונים או פתרון בעיות.",
+        "שלום! אני העוזר שלך ל-SQL. אשמח לעזור בכתיבת שאילתות, תכנון בסיסי נתונים, אופטימיזציה ופתרון בעיות. במה אוכל לסייע?",
       role: "assistant",
       timestamp: new Date(),
     },
   ]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleSendMessage = async () => {
     if (!inputText.trim() || isLoading) return;
@@ -36,39 +44,28 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: messages.map((msg) => ({
-            role: msg.role,
-            content: msg.content,
-          })),
-        }),
+      const response = await axios.post("/api/chat", {
+        messages: messages.map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+        })),
       });
-
-      if (!response.ok) throw new Error("שגיאה בתקשורת עם השרת");
-
-      const data = await response.json();
 
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now().toString(),
-          content: data.content,
+          content: response.data.content,
           role: "assistant",
           timestamp: new Date(),
         },
       ]);
     } catch (error) {
-      console.error(error);
+      console.error("שגיאה:", error);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="flex min-h-screen flex-col items-center p-4 md:p-8">
       <Card className="w-full max-w-3xl border-none shadow-xl bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/90">
@@ -136,7 +133,7 @@ export default function Home() {
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="הקלד את השאלה שלך כאן..."
                 disabled={isLoading}
-                dir="auto"
+                dir="rtl"
                 className="flex-1 h-12 px-4 bg-white/80 border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base shadow-sm"
               />
               <Button
