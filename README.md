@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# צ'אטבוט SQL
 
-## Getting Started
+מערכת צ'אט חכמה המסייעת בכתיבה והבנה של שאילתות SQL באמצעות מודל GPT של OpenAI.
 
-First, run the development server:
+## יכולות המערכת
+
+- המרה של שאלות בשפה טבעית לשאילתות SQL
+- הסברים מפורטים על שאילתות SQL
+- ממשק צ'אט אינטראקטיבי וידידותי למשתמש
+- תמיכה במגוון דיאלקטים של SQL
+- בדיקת תקינות שאילתות בזמן אמת
+- אפשרות לקבלת דוגמאות והסברים מפורטים
+
+## התקנה והפעלה
+
+1. שכפול (Clone) של המאגר:
+
+```bash
+git clone https://github.com/your-username/sql-chatbot.git
+cd sql-chatbot
+```
+
+2. התקנת החבילות הנדרשות:
+
+```bash
+npm install
+# או
+yarn install
+```
+
+3. הגדרת משתני הסביבה:
+   צור קובץ `.env.local` והוסף את המפתח של OpenAI:
+
+```env
+OPENAI_API_KEY=המפתח_שלך_כאן
+```
+
+4. הפעלת שרת הפיתוח:
 
 ```bash
 npm run dev
-# or
+# או
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. פתח את הדפדפן בכתובת [http://localhost:3000](http://localhost:3000) כדי להתחיל להשתמש בצ'אטבוט.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## טכנולוגיות
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Next.js 14 - פריימוורק React מתקדם
+- OpenAI API - ממשק לשירותי בינה מלאכותית
+- TypeScript - שפת תכנות מבוססת JavaScript עם תמיכה בטיפוסים
+- Tailwind CSS - ספריית עיצוב מודרנית
 
-## Learn More
+## אופן השימוש
 
-To learn more about Next.js, take a look at the following resources:
+1. הקלד את השאלה שלך בעברית או באנגלית בנוגע ל-SQL
+2. המערכת תנתח את השאלה ותייצר את שאילתת ה-SQL המתאימה
+3. תוכל לבקש:
+   - הסברים על השאילתה שנוצרה
+   - שינויים ושיפורים בשאילתה
+   - דוגמאות לתרחישים דומים
+   - הבהרות לגבי חלקים ספציפיים בקוד
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## דוגמאות לשאלות
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- "הצג לי את כל הלקוחות שביצעו יותר מ-5 הזמנות"
+- "איך אני יוצר טבלה חדשה של מוצרים?"
+- "תסביר לי את השאילתה הזאת..."
+- "איך אני מחבר בין טבלת משתמשים לטבלת הזמנות?"
 
-## Deploy on Vercel
+## תרומה לפרויקט
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+נשמח לקבל תרומות ושיפורים לפרויקט! אתם מוזמנים לפתוח Pull Request או לדווח על באגים.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## רישיון
+
+MIT License - ניתן להשתמש, לשנות ולהפיץ את הקוד בחופשיות.
